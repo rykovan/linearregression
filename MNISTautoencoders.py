@@ -6,7 +6,7 @@ import torch.distributions
 import torchvision
 import numpy as np
 import matplotlib.pyplot as plt; plt.rcParams['figure.dpi'] = 200
-
+%time
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 
