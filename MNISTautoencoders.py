@@ -6,8 +6,14 @@ import torch.distributions
 import torchvision
 import numpy as np
 import matplotlib.pyplot as plt; plt.rcParams['figure.dpi'] = 200
-%time
+from datetime import datetime
+start_time = datetime.now()
+
+end_time = datetime.now()
+print('Duration: {}'.format(end_time - start_time))
+
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
 
 
 #encoder class by subclassing torch.nn.Module
@@ -102,5 +108,7 @@ def plot_reconstructed(autoencoder, r0=(-5, 10), r1=(-10, 5), n=12):
     plt.imshow(img, extent=[*r0, *r1])
     
 plot_reconstructed(autoencoder)
+end_time = datetime.now()
+print('Duration: {}'.format(end_time - start_time))
     
 
