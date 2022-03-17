@@ -8,7 +8,7 @@ sns.set_style("whitegrid")
 from sklearn.decomposition import PCA
 from itertools import chain
 
-USE_CUDA = True   
+
 #get data
 root = "./data"
 train_set = dset.MNIST(root = root, train = True, transform=torchvision.transforms.ToTensor(),download=True)
