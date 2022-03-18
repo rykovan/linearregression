@@ -7,13 +7,13 @@ import torchvision
 import numpy as np
 import matplotlib.pyplot as plt; plt.rcParams['figure.dpi'] = 200
 from datetime import datetime
-start_time = datetime.now()
+import torchvision.transforms as transforms
 
-end_time = datetime.now()
-print('Duration: {}'.format(end_time - start_time))
+
+
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
+#device = 'cpu'
 
 
 #encoder class by subclassing torch.nn.Module
@@ -59,9 +59,10 @@ class Autoencoder(nn.Module):
 #Next, we will write some code to train the autoencoder 
 #on the MNIST dataset.
 
-def train(autoencoder, data, epochs=20):
+def train(autoencoder, data, epochs=100):
     opt = torch.optim.Adam(autoencoder.parameters())
     for epoch in range(epochs):
+        total_loss = 0.0
         for x, y in data:
             x = x.to(device) # GPU
             opt.zero_grad()
@@ -69,19 +70,28 @@ def train(autoencoder, data, epochs=20):
             loss = ((x - x_hat)**2).sum()
             loss.backward()
             opt.step()
+
+            total_loss += loss.item()
+        print(f'epoch: {epoch + 1}, loss = {total_loss:.4f}')
+
     return autoencoder
+
+
 
 latent_dims = 2
 autoencoder = Autoencoder(latent_dims).to(device) # GPU
 
 data = torch.utils.data.DataLoader(
         torchvision.datasets.MNIST('./data',
-               transform=torchvision.transforms.ToTensor(),
+               transform=transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307), ((0.3081)))]),
                download=True),
         batch_size=128,
         shuffle=True)
 
+start_time = datetime.now()
 autoencoder = train(autoencoder, data)
+end_time = datetime.now()
+print('Duration: {}'.format(end_time - start_time))
 
 
 def plot_latent(autoencoder, data, num_batches=100):
@@ -108,7 +118,7 @@ def plot_reconstructed(autoencoder, r0=(-5, 10), r1=(-10, 5), n=12):
     plt.imshow(img, extent=[*r0, *r1])
     
 plot_reconstructed(autoencoder)
-end_time = datetime.now()
-print('Duration: {}'.format(end_time - start_time))
+
     
+
 
